@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizlet Clone - Home</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Hello!</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 fs-4" href="/"><i
+                                class="fa fa-home"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 fs-4" href="/"><i
+                                class="fa fa-folder"></i>Thư
+                            viện</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <div class="container mt-5 border-3 pt-5">
+        <div class="flex-column d-flex justify-content-between flex-lg-row flex-sm-column">
+            <div class="d-flex align-items-center gap-2 order-sm-1 mb-2">
+                <i class="fa fa-folder fs-2 text-warning"></i>
+                <span class="fs-4" id="fileName"></span>
+            </div>
+            <div class="d-flex align-items-center gap-3 order-sm-2 flex-column flex-sm-row">
+                <div class="input-group w-100">
+                    <input type="search" class="form-control" placeholder="Tìm kiếm chủ đề"
+                        aria-label="Search for folder" aria-describedby="search-file" id="searchFile">
+                    <button class="btn btn-outline-secondary" type="button" id="search-folder"><i
+                            class="fa fa-search"></i>
+                    </button>
+                </div>
+                <div class="d-flex gap-2 ">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#leadningWay">Học</button>
+                    <button id="addFileButton" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#addWord"><i class="fa fa-plus"></i></button>
+                    <button id="deleteSetButton" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#deleteFolderModal"><i class="fa fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="flex-column flex-lg-row d-flex justify-content-between w-100 mt-4 gap-3">
+            <div class="card-item-learn col-12 col-lg-7 p-2 bg-secondary">
+                <div id="fileCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+                    <div class="carousel-inner">
+
+                        <!-- Thêm các slide khác tương tự -->
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#fileCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next text-dark" type="button" data-bs-target="#fileCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="false"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-row d-flex w-100 mt-3 mt-lg-0 gap-3">
+                <div class="card-item-learn w-25 p-2">
+                    <button type="button"
+                        class="btn border-1 border-white text-white w-100 h-100 flex-column d-flex justify-content-center align-items-center">
+                        <i class="fs-3 fa fa-copy"></i>
+                        Flashcard
+                    </button>
+
+                </div>
+                <div class="card-item-learn w-25 p-2">
+                    <button type="button"
+                        class="btn border-1 border-white text-white w-100 h-100 flex-column d-flex justify-content-center align-items-center"
+                        data-bs-target="#addWord">
+                        <i class="fs-3 fa fa-wand-magic-sparkles"></i>Kiểm tra
+                    </button>
+                    <!-- Thêm thẻ học trắc nghiệm -->
+                </div>
+                <div class="card-item-learn w-25 p-2">
+                    <button type="button"
+                        class="btn border-1 border-white text-white w-100 h-100 flex-column d-flex justify-content-center align-items-center"
+                        data-bs-target="#addWord">
+                        <i class="fs-3 fa fa-pen-nib"></i>Viết
+                    </button>
+                    <!-- Thêm thẻ học viết -->
+                </div>
+                <div class=" card-item-learn w-25 p-2">
+                    <button type="button"
+                        class="btn border-1 border-white text-white w-100 h-100 flex-column d-flex justify-content-center align-items-center">
+                        <i class="fs-3 fa-brands fa-slack"></i> Kết hợp
+                    </button>
+                    <!-- Thêm thẻ học kết hợp viết và trắc nghiệm -->
+                </div>
+            </div>
+
+        </div>
+        <div class="mt-4 box-folder">
+            <div id="category-list" class="flex-column">
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/common.js"></script>
+    <script src="js/AxiosService.js"></script>
+    <script src="js/file.js"></script>
+
+</body>
+
+</html>

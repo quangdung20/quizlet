@@ -1,0 +1,98 @@
+.box-folder {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 10px;
+    border: 1px solid #6c6c6c;
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    min-height: 200px;
+    scrollbar-width: thin;
+}
+
+.icon {
+    color: rgb(173, 180, 193);
+}
+
+.card-forder {
+    border-radius: 10px;
+    box-shadow: rgba(100, 100, 111, 1) 0px 0px 10px !important;
+    min-height: 200px;
+
+}
+
+.card-item-learn {
+    border-radius: 10px;
+    box-shadow: rgba(100, 100, 111, 1) 0px 0px 10px !important;
+    min-height: 100px;
+    background: #5ba37c;
+}
+
+.folderName {
+    font-size: 20px;
+    font-weight: 600;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.icon:hover {
+    color: brown;
+    transform: scale(1.1);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.box-file {
+    box-shadow: rgba(100, 100, 111, 1) 0px 0px 10px !important;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.box-file:hover {
+    background: linear-gradient(145deg, #1fae8d, #b1d0cf);
+    transform: scale(1.015);
+    /* cursor: pointer; */
+    transition: 0.2s;
+    color: aliceblue;
+
+}
+
+.box-file:hover .box_icon_file {
+    background: #ffffff;
+    border: 4px double #c087e8;
+
+}
+
+.box-file:hover .button-action i {
+    color: #ffffff;
+}
+
+.box_icon_file {
+    padding: 8px;
+    border-radius: 10px;
+    border: 3px double #55137376;
+}
+
+.icon-file {
+    width: 30px;
+    height: 30px;
+}
+
+.cart_item_slide {
+    color: #fff;
+}
+
+.slide_item:hover .btnViewFile {
+    opacity: 1;
+    transition: 0.5s;
+}
+
+.btnViewFile {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    box-shadow: rgb(0, 0, 0) 0px 1px 10px;
+}
