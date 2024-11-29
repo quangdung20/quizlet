@@ -13,6 +13,11 @@ let allFiles = []; // Biến lưu danh sách tất cả file
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchFiles(folderId);
+  createFileBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    addFile();
+    addFileModal.hide();
+  });
 });
 
 function searchFiles() {
@@ -93,7 +98,6 @@ async function addFile() {
     const response = await axiosservice.post(`/api/folders/${folderId}/files`, {
       name: fileNameValue,
     });
-    addFileModal.hide();
     showToast("Thêm file thành công!", "success");
     fetchFiles(folderId); // Tải lại danh sách file sau khi thêm
     document.getElementById("fileName").value = ""; // Xóa giá trị input
@@ -144,7 +148,8 @@ async function deleteFile() {
   try {
     const response = await axiosservice.delete(`/api/files/${currentFileId}`);
     showToast("File đã được xóa.", "success");
-    fetchFiles(1); // Tải lại danh sách file sau khi xóa
+    fetchFiles(folderId);
+    deleteFileModal.hide();
   } catch (error) {
     console.error("Error deleting file:", error);
     showToast("Có lỗi xảy ra khi xóa file.", "error");

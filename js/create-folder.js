@@ -150,7 +150,6 @@ async function createFolder() {
     const newFolder = await axiosservice.post("/api/folders", {
       name: name,
     });
-
     showToast("Tạo folder thành công!", "success");
     loadFolders(); // Tải lại danh sách folder sau khi tạo mới
   } catch (error) {
