@@ -53,7 +53,7 @@ function renderFiles(files) {
             <div class="w-100 card box-file d-flex flex-row" id="file-${file.id}">
               <div  type="button" class="card-body d-flex flex-row align-items-center" onclick="CardFileDetail(${file.id}, '${file.name}')">
                   <div class="d-flex justify-content-between box_icon_file">
-                      <img src="/App/image/setting-file.png" class="icon-file" alt="file" />
+                      <img src="image/setting-file.png" class="icon-file" alt="file" />
                   </div>
                   <div class="d-flex flex-column">
                     <h5 class="card-title m-3 mt-0 mb-0 d-flex justify-content-start">${file.name}</h5>
