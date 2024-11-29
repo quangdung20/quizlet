@@ -1,28 +1,25 @@
-// //  handle the click event open the modal
+// Function to include an HTML file into a specified element
+function includeHTML(elementId, filePath) {
+  // Fetch the element where the HTML will be injected
+  var element = document.getElementById(elementId);
 
-// // @app.route('/api/folders/search', methods=['GET'])
-// // def search_folders():
-// //     conn = get_db_connection()
-// //     search = request.args.get('search')
-// //     folders = conn.execute('SELECT * FROM folders WHERE name LIKE ?', ('%' + search + '%',)).fetchall()
-// //     conn.close()
-// //     return jsonify([{"id": folder["id"], "name": folder["name"]} for folder in folders])
-// //
-// // Tim kiem folder
-// const searchInput = document.getElementById("searchFolder");
-// searchInput.addEventListener("input", searchFolders);
+  if (element) {
+    fetch(filePath)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load file: " + filePath);
+        }
+        return response.text();
+      })
+      .then((html) => {
+        element.innerHTML = html;
+      })
+      .catch((error) => {
+        console.error(error);
+        element.innerHTML = "Failed to load content.";
+      });
+  }
+}
 
-// async function searchFolders() {
-//   const search = searchInput.value.trim();
-//   if (!search) {
-//     return;
-//   }
-
-//   const axiosservice = new AxiosService();
-//   try {
-//     const response = await axiosservice.get(`/api/folders/search?search=${search}`);
-//     loadFolders(response);
-//   } catch (error) {
-//     console.error("Lỗi khi tìm kiếm folder:", error);
-//   }
-// }
+// Include the header and footer
+includeHTML("header", "/components/header.html");

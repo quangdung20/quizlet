@@ -7,7 +7,6 @@ const axiosservice = new AxiosService();
 document.addEventListener("DOMContentLoaded", () => {
   displayFilesInCarousel(fileId);
 });
-
 async function displayFilesInCarousel(fileId) {
   try {
     const response = await axiosservice.get(`/api/folders/${folderId}/files`);
@@ -21,7 +20,6 @@ async function displayFilesInCarousel(fileId) {
     showToast("Không thể tải slide file. Vui lòng thử lại!", "error");
   }
 }
-
 function RenderFileSlide(files) {
   const carouselInner = document.querySelector(".carousel-inner");
   carouselInner.innerHTML = ""; // Xóa các slide cũ
@@ -68,7 +66,6 @@ function RenderFileSlide(files) {
     }
   });
 }
-
 function CardFileDetail(fileId, fileName) {
   const fileItem = {
     fileId: fileId,
