@@ -1,5 +1,9 @@
 // Lấy ID folder từ URL
 const folderNameLabel = document.getElementById("folderName");
+const addFileButton = document.getElementById("addFileButton");
+const fileName = document.getElementById("fileName");
+const newFileName = document.getElementById("newFileName");
+const createFileBtn = document.getElementById("createFileBtn");
 const folderItem = JSON.parse(sessionStorage.getItem("folderItem"));
 const folderId = folderItem.folderId;
 const axiosservice = new AxiosService();
@@ -13,10 +17,14 @@ let allFiles = []; // Biến lưu danh sách tất cả file
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchFiles(folderId);
+  addFileButton.addEventListener("click", () => {
+    fileName.value = "";
+    addFileModal.show();
+  });
   createFileBtn.addEventListener("click", (event) => {
     event.preventDefault();
-    addFile();
     addFileModal.hide();
+    addFile();
   });
 });
 
@@ -87,7 +95,6 @@ function CardFileDetail(fileId, fileName) {
 }
 // Hàm thêm file mới vào thư mục
 async function addFile() {
-  const fileName = document.getElementById("fileName");
   const fileNameValue = fileName.value;
   if (!fileNameValue) {
     fileName.classList.add("is-invalid");
@@ -110,6 +117,7 @@ async function addFile() {
 // Hàm mở modal và điền tên file hiện tại khi sửa file
 async function editFile(fileId) {
   currentFileId = fileId;
+  newFileName.value = "";
   const fileNameLabel = document.getElementById("fileNameLabel");
   fileNameLabel.innerHTML =
     "" +
@@ -119,7 +127,6 @@ async function editFile(fileId) {
 
 // Hàm cập nhật tên file
 async function updateFile() {
-  const newFileName = document.getElementById("newFileName");
   const newFileNameValue = newFileName.value;
   if (!newFileNameValue) {
     newFileName.classList.add("is-invalid");
