@@ -89,12 +89,11 @@ async function addFile() {
     showToast("Tên file không thể để trống!", "warning");
     return;
   }
-  console.log(folderId);
-
   try {
     const response = await axiosservice.post(`/api/folders/${folderId}/files`, {
       name: fileNameValue,
     });
+    addFileModal.hide();
     showToast("Thêm file thành công!", "success");
     fetchFiles(folderId); // Tải lại danh sách file sau khi thêm
     document.getElementById("fileName").value = ""; // Xóa giá trị input
