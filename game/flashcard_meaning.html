@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .flashcard-container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .flashcard {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            position: relative;
+            min-height: 150px;
+        }
+
+        .hidden-text {
+            visibility: hidden;
+        }
+
+        .visible-text {
+            visibility: visible;
+        }
+
+        .form-check {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container flashcard-container">
+        <h1>Flashcard App</h1>
+        <div style="margin: 20px 0;">
+            <p id="progress-text">Progress: 0 / 5</p>
+            <div id="progress-bar-container" style="width: 100%; background: #e9ecef; border-radius: 10px;">
+                <div id="progress-bar" style="width: 0%; background: #007bff; height: 20px; border-radius: 10px;"></div>
+            </div>
+        </div>
+        <!-- Flashcard -->
+        <div class="flashcard">
+            <h2 id="word"></h2>
+            <p id="meaning" class="hidden-text"></p>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="d-flex justify-content-between">
+            <button id="prev-btn" onclick="prevCard()" class="btn btn-secondary" disabled>Previous</button>
+            <button id="next-btn" onclick="nextCard()" class="btn btn-primary">Next</button>
+        </div>
+
+        <!-- Options -->
+        <div class="mt-4">
+            <h3>Flashcard Options</h3>
+            <div class="form-check">
+                <input type="radio" name="displayMode" id="show-term" value="term" class="form-check-input" checked>
+                <label for="show-term" class="form-check-label">Show Term Only</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" name="displayMode" id="show-meaning" value="meaning" class="form-check-input">
+                <label for="show-meaning" class="form-check-label">Show Meaning Only</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" name="displayMode" id="show-both" value="both" class="form-check-input">
+                <label for="show-both" class="form-check-label">Show Both</label>
+            </div>
+            <div class="form-check mt-3">
+                <input type="checkbox" id="enable-tts" class="form-check-input">
+                <label for="enable-tts" class="form-check-label">Enable Text-to-Speech (TTS)</label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const flashCards = [
+            { word: "Adventure", meaning: "A fun or exciting thing that you do" },
+            { word: "Journey", meaning: "A long trip" },
+            { word: "Destination", meaning: "The place you are going to" },
+            { word: "Challenge", meaning: "A difficult task" },
+            { word: "Success", meaning: "The achievement of a goal" }
+        ];
+
+        let currentCardIndex = 0;
+
+        // Hàm đọc văn bản thành giọng nói
+        function textToSpeech(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = "en-US";
+            speechSynthesis.speak(speech);
+        }
+
+        // Tải flash card dựa trên chế độ hiển thị
+        function loadFlashCard() {
+            const wordElement = document.getElementById("word");
+            const meaningElement = document.getElementById("meaning");
+            const progressText = document.getElementById("progress-text");
+            const progressBar = document.getElementById("progress-bar");
+
+            const displayMode = document.querySelector('input[name="displayMode"]:checked').value;
+            const enableTTS = document.getElementById("enable-tts").checked;
+
+            const currentCard = flashCards[currentCardIndex];
+
+            // Hiển thị theo chế độ được chọn
+            if (displayMode === "term") {
+                wordElement.textContent = currentCard.word;
+                meaningElement.textContent = "";
+                meaningElement.classList.add("hidden-text");
+            } else if (displayMode === "meaning") {
+                wordElement.textContent = "";
+                meaningElement.textContent = currentCard.meaning;
+                meaningElement.classList.remove("hidden-text");
+            } else if (displayMode === "both") {
+                wordElement.textContent = currentCard.word;
+                meaningElement.textContent = currentCard.meaning;
+                meaningElement.classList.remove("hidden-text");
+            }
+
+            // TTS cho chế độ hiển thị
+            if (enableTTS) {
+                const ttsText = displayMode === "both"
+                    ? `${currentCard.word}. ${currentCard.meaning}`
+                    : displayMode === "term"
+                        ? currentCard.word
+                        : currentCard.meaning;
+
+                textToSpeech(ttsText);
+            }
+
+            // Cập nhật trạng thái nút và tiến độ
+            document.getElementById("prev-btn").disabled = currentCardIndex === 0;
+            document.getElementById("next-btn").textContent =
+                currentCardIndex === flashCards.length - 1 ? "Restart" : "Next";
+            progressText.textContent = `Progress: ${currentCardIndex + 1} / ${flashCards.length}`;
+            progressBar.style.width = `${((currentCardIndex + 1) / flashCards.length) * 100}%`;
+        }
+
+        // Chuyển đến flashcard tiếp theo
+        function nextCard() {
+            if (currentCardIndex < flashCards.length - 1) {
+                currentCardIndex++;
+            } else {
+                currentCardIndex = 0; // Lặp lại từ đầu
+            }
+            loadFlashCard();
+        }
+
+        // Quay lại flashcard trước đó
+        function prevCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+            }
+            loadFlashCard();
+        }
+
+        // Lắng nghe sự kiện thay đổi tùy chọn
+        document.querySelectorAll('input[name="displayMode"]').forEach(radio => {
+            radio.addEventListener("change", loadFlashCard);
+        });
+
+        // Thêm sự kiện bàn phím
+        document.addEventListener("keydown", (event) => {
+            const meaningElement = document.getElementById("meaning");
+
+            switch (event.code) {
+                case "Space":
+                    event.preventDefault();
+                    meaningElement.classList.toggle("hidden-text");
+                    break;
+                case "ArrowRight":
+                    nextCard();
+                    break;
+                case "ArrowLeft":
+                    prevCard();
+                    break;
+            }
+        });
+
+        // Khởi tạo trang
+        document.addEventListener("DOMContentLoaded", loadFlashCard);
+    </script>
+</body>
+
+</html>

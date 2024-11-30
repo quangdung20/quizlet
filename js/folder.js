@@ -1,16 +1,17 @@
-// Lấy ID folder từ URL
+// Lấy ID folder từ URL và hiển thị tên folder `folder.html?id=${folderId}&name=${folderName}`;
+const urlParams = new URLSearchParams(window.location.search);
+const folderId = urlParams.get("id");
+const folderName = urlParams.get("name");
 const folderNameLabel = document.getElementById("folderName");
 const addFileButton = document.getElementById("addFileButton");
 const fileName = document.getElementById("fileName");
 const newFileName = document.getElementById("newFileName");
 const createFileBtn = document.getElementById("createFileBtn");
-const folderItem = JSON.parse(sessionStorage.getItem("folderItem"));
-const folderId = folderItem.folderId;
 const axiosservice = new AxiosService();
 const addFileModal = new bootstrap.Modal("#addFileModal");
 const editFileModal = new bootstrap.Modal("#editFileModal");
 const deleteFileModal = new bootstrap.Modal("#deleteFileModal");
-folderNameLabel.innerHTML = folderItem.folderName;
+folderNameLabel.innerHTML = folderName;
 // Biến toàn cục để lưu ID của file đang được sửa
 let currentFileId = null;
 let allFiles = []; // Biến lưu danh sách tất cả file
@@ -64,7 +65,7 @@ function renderFiles(files) {
       fileItem.classList.add("col");
       fileItem.innerHTML = `
             <div class="w-100 card box-file d-flex flex-row" id="file-${file.id}">
-              <div  type="button" class="card-body d-flex flex-row align-items-center" onclick="CardFileDetail(${file.id}, '${file.name}')">
+              <div  type="button" class="card-body d-flex flex-row align-items-center" onclick="CardFileDetail(${file.id})">
                   <div class="d-flex justify-content-between box_icon_file">
                       <img src="image/setting-file.png" class="icon-file" alt="file" />
                   </div>
@@ -84,14 +85,8 @@ function renderFiles(files) {
   }
 }
 
-function CardFileDetail(fileId, fileName) {
-  const fileItem = {
-    fileId: fileId,
-    fileName: fileName,
-    folderId: folderId,
-  };
-  sessionStorage.setItem("fileItem", JSON.stringify(fileItem));
-  window.location.href = "./file.html";
+function CardFileDetail(fileId) {
+  window.location.href = `file.html?folder=${folderId}&file=${fileId}`;
 }
 // Hàm thêm file mới vào thư mục
 async function addFile() {

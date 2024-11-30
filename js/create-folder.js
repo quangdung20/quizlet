@@ -33,7 +33,6 @@ addFolderButton.addEventListener("click", () => {
 createFolderBtn.addEventListener("click", (event) => {
   event.preventDefault();
   createFolder();
-  modalAddFolder.hide();
 });
 
 // Hàm để tải danh sách folder từ server và lưu trữ vào mảng
@@ -41,6 +40,7 @@ async function loadFolders() {
   try {
     const folders = await axiosservice.get("/api/folders");
     foldersData = folders; // Lưu trữ dữ liệu vào mảng
+    console.log(foldersData);
 
     // Gọi hàm để hiển thị folder
     displayFolders(foldersData);
@@ -89,6 +89,7 @@ function displayFolders(folders) {
             <hr class="my-2">
             <div class="d-flex flex-column flex-fill justify-content-between overflow-hidden">
               <h5 class="card-title folderName">${folder.name}</h5>
+              <p class="m-0">Học phần: ${folder.quantity}</p>
               <button class="btn btn-primary w-100 mt-auto" onclick="viewFolder(${
                 folder.id
               }, '${folder.name}')">Xem</button>
@@ -128,15 +129,8 @@ searchInput.addEventListener("input", searchFolders);
 
 // Hàm xem chi tiết folder
 function viewFolder(folderId, folderName) {
-  const folderItem = {
-    folderId: folderId,
-    folderName: folderName,
-  };
-  sessionStorage.setItem("folderItem", JSON.stringify(folderItem));
-  // Điều hướng đến trang folder
-  window.location.href = "folder.html";
+  window.location.href = `folder.html?id=${folderId}&name=${folderName}`;
 }
-
 // Xử lý sự kiện khi người dùng submit form tạo folder
 async function createFolder() {
   const name = folderNameInput.value.trim();
@@ -151,6 +145,8 @@ async function createFolder() {
       name: name,
     });
     showToast("Tạo folder thành công!", "success");
+    modalAddFolder.hide();
+    folderNameInput.value = ""; // Xóa giá trị input
     loadFolders(); // Tải lại danh sách folder sau khi tạo mới
   } catch (error) {
     console.error("Lỗi khi tạo folder:", error);
@@ -179,6 +175,8 @@ deleteFolderConfirmButton.addEventListener("click", async (event) => {
   const axiosservice = new AxiosService();
   try {
     const response = await axiosservice.delete(`/api/folders/${folderId}`);
+    console.log(response);
+
     showToast("Xóa folder thành công!", "success");
     document.querySelector(`[data-id="${folderId}"]`).closest(".col").remove();
     deleteFolderModal.hide(); // Đóng modal
@@ -199,7 +197,6 @@ saveFolderButton.addEventListener("click", async (event) => {
     showToast("Vui lòng nhập tên folder!", "warning");
     return;
   }
-
   try {
     const response = await axiosservice.put(`/api/folders/${folderId}`, {
       name,

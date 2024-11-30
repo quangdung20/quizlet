@@ -44,3 +44,46 @@ function showToast(message, type = "success", icon = "") {
     toastElement.remove(); // Xóa toast sau khi hiển thị
   }, 3000); // 3000ms = 3 giây
 }
+
+
+function createLoadingModal() {
+  // Kiểm tra xem modal đã tồn tại chưa
+  if (!document.getElementById("loadingModal")) {
+    // Tạo modal HTML
+    const modalHTML = `
+            <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <p class="mt-3">Processing, please wait...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    // Thêm modal vào body
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  }
+}
+
+// Hiển thị modal loading
+function showLoading() {
+  createLoadingModal(); // Gọi hàm tạo modal nếu chưa có
+  const loadingModal = new bootstrap.Modal(
+    document.getElementById("loadingModal")
+  );
+  loadingModal.show();
+}
+
+// Ẩn modal loading
+function hideLoading() {
+  const loadingModal = bootstrap.Modal.getInstance(
+    document.getElementById("loadingModal")
+  );
+  if (loadingModal) {
+    loadingModal.hide();
+  }
+}

@@ -1,11 +1,16 @@
+.container {
+    height: 90vh;
+}
+
 .box-folder {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     border-radius: 10px;
     border: 1px solid #6c6c6c;
     padding: 20px;
-    max-height: 500px;
+    /* max-height: 500px; */
     overflow-y: auto;
-    min-height: 200px;
+    /* min-height: 100%; */
+    /* min-height: 1000px; */
     scrollbar-width: thin;
 }
 
@@ -25,6 +30,13 @@
     box-shadow: rgba(100, 100, 111, 1) 0px 0px 10px !important;
     min-height: 100px;
     background: #5ba37c;
+}
+
+.learn_way:hover {
+    background: #9f4ed9;
+    color: #ffffff;
+    transition: 0.3s;
+    transform: scale(1.05);
 }
 
 .folderName {
@@ -95,4 +107,18 @@
     transform: translate(-50%, -50%);
     opacity: 0;
     box-shadow: rgb(0, 0, 0) 0px 1px 10px;
+}
+
+#addWordModal .modal-dialog {
+    min-width: 50vw;
+    max-height: 80vh;
+}
+
+
+.addWordBox {
+    border: 2px solid #00b874;
+    border-radius: 10px;
+    max-height: 50vh;
+    overflow-y: auto;
+
 }
