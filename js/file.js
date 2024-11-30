@@ -47,13 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
   addWordBtn.addEventListener("click", function () {
     window.location.href = `add-word.html?folder=${folderId}&file=${fileId}&name=${fileName}`;
   });
-
-
 });
 
 function PlayGame(button, game) {
   button.addEventListener("click", () => {
-    window.location.href = `quizlet/game/${game}.html?file=${fileId}`;
+    window.location.href = `/game/${game}.html?file=${fileId}`;
   });
 }
 function filterWords(query) {
