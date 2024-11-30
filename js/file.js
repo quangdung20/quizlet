@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function PlayGame(button, game) {
   button.addEventListener("click", () => {
-    window.location.href = `/game/${game}.html?file=${fileId}`;
+    window.location.href = `quizlet/game/${game}.html?file=${fileId}`;
   });
 }
 function filterWords(query) {
