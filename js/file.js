@@ -97,7 +97,7 @@ function RenderFileSlide(files) {
                         <div class="card-body position-relative">
                            <div class="input-gr">
                               <h5 class="card-title">${file.name}</h5>
-                              <p class="card-text m-0">ID: ${file.id}</p>
+                              <p class="card-text m-0">ID: ${file.quantity}</p>
                            </div>
                             <button class="btn btn-primary btnViewFile d-flex p-2 align-items-center" onclick="CardFileDetail(${file.id}, '${file.name}')">
                                 Xem chi tiết
@@ -114,14 +114,8 @@ function RenderFileSlide(files) {
     }
   });
 }
-function CardFileDetail(fileId, fileName) {
-  const fileItem = {
-    fileId: fileId,
-    fileName: fileName,
-    folderId: folderId,
-  };
-  localStorage.setItem("fileItem", JSON.stringify(fileItem));
-  window.location.href = "./file.html";
+function CardFileDetail(fileId) {
+  window.location.href = "./file.html?folder=" + folderId + "&file=" + fileId;
 }
 
 // ham lấy danh sách từ trong file

@@ -325,6 +325,23 @@ def delete_word(word_id):
     finally:
         conn.close()
 
+# L y t  c  t  trong t  c  file trong folder
+@app.route('/api/folders/<int:folder_id>/words', methods=['GET'])
+def get_all_words(folder_id):
+    conn = get_db_connection()
+    try:
+        words = conn.execute('SELECT id, word, meaning, langWord, langMeaning FROM words WHERE file_id IN (SELECT id FROM files WHERE folder_id = ?)', (folder_id,)).fetchall()
+        return jsonify([
+            {"id": word["id"], "word": word["word"], "meaning": word["meaning"], "langWord": word["langWord"], "langMeaning": word["langMeaning"]}
+            for word in words
+        ])
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+    finally:
+        conn.close()
+    
+
+
 
 if __name__ == '__main__':
     init_db()  # Khởi tạo database

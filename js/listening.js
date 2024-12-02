@@ -49,23 +49,28 @@ async function fetchWords(fileId) {
   }
 }
 // Cập nhật số lượng câu hỏi khi người dùng chọn
-function selectNumber() {
+async function selectNumber() {
   const selectedCount = document.getElementById("question-count").value;
+  if (!selectedCount) {
+    showToast("Em chọn số lượng câu hỏi nhé 😘!", "info");
+    return;
+  }
   let totalQuestions = originalQuestions.length;
   if (selectedCount !== "all") {
     totalQuestions = parseInt(selectedCount);
   }
-
   loadQuestions(totalQuestions);
 }
 
 // Hàm nạp câu hỏi theo số lượng được chọn
 function loadQuestions(count) {
-  currentQuestions = [...originalQuestions].slice(0, parseInt(count));
+  const shuffledQuestions = shuffleArray([...originalQuestions]);
+  currentQuestions = shuffledQuestions.slice(0, parseInt(count));
   answers = Array(count).fill(null); // Đặt lại câu trả lời
   currentQuestionIndex = 0; // Đặt lại chỉ số câu hỏi
   loadQuestion(); // Hiển thị câu hỏi đầu tiên
 }
+
 
 function loadQuestion() {
   const questionContainer = document.getElementById("question");
