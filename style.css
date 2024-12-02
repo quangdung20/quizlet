@@ -1,5 +1,6 @@
 .container {
-    height: 90vh;
+    /* height: 90vh; */
+    overflow-y: auto;
 }
 
 .box-folder {
@@ -7,10 +8,7 @@
     border-radius: 10px;
     border: 1px solid #6c6c6c;
     padding: 20px;
-    /* max-height: 500px; */
     overflow-y: auto;
-    /* min-height: 100%; */
-    /* min-height: 1000px; */
     scrollbar-width: thin;
 }
 
@@ -121,4 +119,62 @@
     max-height: 50vh;
     overflow-y: auto;
 
+}
+
+.meaning-editor, .word-editor, .answers-btn{
+    height: 100px;
+    overflow-y: auto;
+    /* border: 1px solid #00b874; */
+    white-space: pre-line;
+}
+
+/* QUiz */
+
+
+/* Cập nhật màu cho danh sách kết quả */
+.result-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Câu trả lời đúng sẽ có nền xanh */
+.answered-correct {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Câu trả lời sai sẽ có nền đỏ */
+.answered-wrong {
+    background-color: #f06e7b;
+    color: white;
+}
+
+/* Câu chưa trả lời sẽ có nền xám */
+.not-answered {
+    background-color: #6c757d;
+    color: white;
+}
+
+.result-item p {
+    margin: 5px 0;
+}
+
+/* Widget danh sách câu hỏi */
+.question-widget {
+    /* max-height: 100%; */
+    max-height: 300px;
+    overflow-y: auto; 
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0px;
+    /* thu nhỏ width scroll */
+    scrollbar-width: thin;
+}
+
+.question-widget button {
+    width: 28%;
+    padding: 10px;
 }

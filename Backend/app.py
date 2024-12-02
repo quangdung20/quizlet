@@ -34,6 +34,8 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 word TEXT NOT NULL,
                 meaning TEXT NOT NULL,
+                langWord TEXT DEFAULT 'en-US',
+                langMeaning TEXT DEFAULT 'en-US',
                 file_id INTEGER NOT NULL,
                 FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE
             );
@@ -144,12 +146,12 @@ def get_words(file_id):
     file = conn.execute('SELECT name FROM files WHERE id = ?', (file_id,)).fetchone()
     if not file:
         return jsonify({"error": "File not found"}), 404
-    words = conn.execute('SELECT id, word, meaning FROM words WHERE file_id = ?', (file_id,)).fetchall()
+    words = conn.execute('SELECT id, word, meaning, langWord, langMeaning FROM words WHERE file_id = ?', (file_id,)).fetchall()
     conn.close()
     return jsonify({
         "name": file["name"],
         "data": [
-            {"id": word["id"], "word": word["word"], "meaning": word["meaning"]}
+            {"id": word["id"], "word": word["word"], "meaning": word["meaning"], "langWord": word["langWord"], "langMeaning": word["langMeaning"]}
             for word in words
         ]
     })
@@ -184,26 +186,67 @@ def add_words(file_id):
     data = request.json
     words = data.get('words')
 
-    if not words:
-        return jsonify({"error": "Words are required"}), 400
+    # Kiểm tra đầu vào
+    if not isinstance(words, list) or len(words) == 0:
+        return jsonify({"error": "Words must be a non-empty list"}), 400
+
     conn = get_db_connection()
     try:
+        # Kiểm tra file có tồn tại hay không
+        file = conn.execute('SELECT 1 FROM files WHERE id = ?', (file_id,)).fetchone()
+        if not file:
+            return jsonify({"error": "File not found"}), 404
+
+        success_list = []  # Danh sách từ được thêm thành công
+        error_list = []    # Danh sách từ lỗi
+
         for word_data in words:
-            word = word_data.get('word')
-            meaning = word_data.get('meaning')
+            try:
+                # Lấy dữ liệu từng từ
+                word = word_data.get('word', '').strip()
+                meaning = word_data.get('meaning', '').strip()
+                langWord = word_data.get('langWord', 'en-US').strip()
+                langMeaning = word_data.get('langMeaning', 'en-US').strip()
 
-            if not word or not meaning:
-                return jsonify({"error": "Word and meaning are required"}), 400
+                # Kiểm tra dữ liệu từ và nghĩa
+                if not word or not meaning:
+                    error_list.append({"error": "Word and meaning are required", "data": word_data})
+                    continue
 
-            # Thêm từ mới vào bảng words
-            conn.execute('INSERT INTO words (word, meaning, file_id) VALUES (?, ?, ?)',
-                         (word, meaning, file_id))
+                # Thêm từ vào bảng words
+                cursor = conn.execute('''
+                    INSERT INTO words (word, meaning, langWord, langMeaning, file_id) 
+                    VALUES (?, ?, ?, ?, ?)
+                ''', (word, meaning, langWord, langMeaning, file_id))
+
+                # Thêm thông tin từ vào danh sách thành công
+                success_list.append({
+                    "id": cursor.lastrowid,
+                    "word": word,
+                    "meaning": meaning,
+                    "langWord": langWord,
+                    "langMeaning": langMeaning
+                })
+
+            except Exception as e:
+                # Ghi lại lỗi nếu có lỗi khi xử lý từng từ
+                error_list.append({"error": str(e), "data": word_data})
 
         # Cập nhật số lượng từ trong file
         conn.execute('UPDATE files SET quantity = (SELECT COUNT(*) FROM words WHERE file_id = ?) WHERE id = ?',
                      (file_id, file_id))
         conn.commit()
-        return jsonify({"message": "Words added successfully"}), 201
+
+        # Trả về phản hồi
+        return jsonify({
+            "message": "Words processed successfully",
+            "added": success_list,
+            "errors": error_list
+        }), 207 if error_list else 201
+
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+
     finally:
         conn.close()
 
@@ -286,3 +329,4 @@ def delete_word(word_id):
 if __name__ == '__main__':
     init_db()  # Khởi tạo database
     app.run(debug=False)
+

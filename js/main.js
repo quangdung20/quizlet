@@ -22,4 +22,4 @@ function includeHTML(elementId, filePath) {
 }
 
 // Include the header and footer
-includeHTML("header", "header.html");
+includeHTML("header", "../header.html");

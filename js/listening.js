@@ -7,7 +7,9 @@ const fileId = urlParams.get("file");
 const fileNameLabel = document.getElementById("fileName");
 const quantityWord = document.getElementById("quanity_word");
 const BacktoFile = document.getElementById("backtofile");
-
+const playAudio = document.getElementById("playAudio");
+const hintBtn = document.getElementById("hint");
+const question = document.getElementById("question");
 // Dịch vụ Axios
 const axiosservice = new AxiosService();
 
@@ -17,13 +19,18 @@ let currentQuestions = []; // Danh sách câu hỏi được chọn
 let currentQuestionIndex = 0; // Câu hỏi hiện tại
 let answers = []; // Câu trả lời của người dùng
 let score = 0; // Điểm số
-
+let lang = "en-US"; // Ngôn ngữ mặc định
 // Khi trang được tải
 document.addEventListener("DOMContentLoaded", () => {
   fetchWords(fileId);
 
   BacktoFile.addEventListener("click", () => {
     window.location.href = `/file.html?folder=${folderId}&file=${fileId}`;
+  });
+  hintBtn.addEventListener("click", () => {
+    console.log(question);
+
+    question.style.opacity = 1;
   });
 });
 
@@ -66,8 +73,11 @@ function loadQuestion() {
   const prevBtn = document.getElementById("prev-btn");
   const nextBtn = document.getElementById("next-btn");
   const submitBtn = document.getElementById("submit-btn");
+  question.style.opacity = 0;
   const currentQuestion = currentQuestions[currentQuestionIndex];
-  questionContainer.textContent = `What is the meaning of "${currentQuestion.word}"?`;
+  questionContainer.textContent = `${currentQuestion.word}`;
+  // gán ngôn ngữ cho văn bản
+  lang = currentQuestion.langWord;
 
   const wrongAnswers = originalQuestions
     .filter((q) => q.meaning !== currentQuestion.meaning) // Loại bỏ đáp án đúng
@@ -107,6 +117,11 @@ function loadQuestion() {
     currentQuestionIndex === currentQuestions.length - 1
       ? "inline-block"
       : "none";
+
+  const text = currentQuestion.word;
+  setTimeout(() => {
+    textToSpeech(text, lang);
+  }, 500);
 
   updateQuestionWidget();
 }
@@ -210,3 +225,30 @@ function shuffleArray(array) {
   return array.sort(() => Math.random() - 0.5);
 }
 
+function textToSpeech(text, language = "en-US") {
+  if (!text) {
+    console.error("Không có văn bản để đọc.");
+    showToast("Không có văn bản để đọc!", "error"); // Hiển thị thông báo nếu cần
+    return;
+  }
+
+  const speech = new SpeechSynthesisUtterance(text);
+  const voices = speechSynthesis.getVoices();
+
+  // Sử dụng giọng nói mặc định phù hợp với ngôn ngữ (nếu có)
+  const defaultVoice = voices.find((voice) => voice.lang.startsWith(language));
+  if (defaultVoice) {
+    speech.voice = defaultVoice;
+  } else {
+    console.warn(`Không tìm thấy giọng nói mặc định cho ngôn ngữ: ${language}`);
+  }
+
+  speech.lang = language; // Đặt ngôn ngữ cho văn bản
+  speechSynthesis.speak(speech);
+}
+
+// Nút phát văn bản
+playAudio?.addEventListener("click", () => {
+  const text = question?.textContent?.trim(); // Loại bỏ khoảng trắng thừa
+  textToSpeech(text, lang);
+});

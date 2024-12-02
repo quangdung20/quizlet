@@ -8,8 +8,7 @@ const deleteWordModal = new bootstrap.Modal("#deleteWordModal");
 const addWordBtn = document.getElementById("addWordLink");
 const deleteWordBtn = document.getElementById("deleteWordBtn");
 const editWordForm = document.getElementById("editWordForm");
-const meaningEditor = document.getElementById("meaningEditor");
-const wordEditor = document.getElementById("wordEditor");
+
 const saveEditWordBtn = document.getElementById("saveEditWordBtn");
 const searchWordInput = document.getElementById("searchWord");
 
@@ -22,15 +21,6 @@ const axiosservice = new AxiosService();
 let fileName = "";
 let wordId;
 let allWords = [];
-const wordEditorBox = new Quill(wordEditor, {
-  theme: "snow",
-  placeholder: "Nhập từ...",
-});
-
-const meaningEditorBox = new Quill(meaningEditor, {
-  theme: "snow",
-  placeholder: "Nhập nghĩa hoặc đoạn văn...",
-});
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchWords(fileId);
@@ -38,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   PlayGame(quizGameBtn, "quiz");
   PlayGame(flashcardGameBtn, "flashcard");
   PlayGame(writeGameBtn, "write");
-  PlayGame(listenGameBtn, "listen");
+  PlayGame(listenGameBtn, "listening");
   searchWordInput.addEventListener("input", (event) => {
     const query = event.target.value; // Lấy nội dung tìm kiếm
     filterWords(query); // Lọc danh sách từ
@@ -51,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function PlayGame(button, game) {
   button.addEventListener("click", () => {
-    window.location.href = `game/${game}.html?file=${fileId}`;
+    window.location.href = `game/${game}.html?folder=${folderId}&file=${fileId}`;
   });
 }
 function filterWords(query) {
@@ -152,6 +142,16 @@ async function fetchWords(fileId) {
   }
 }
 
+const sanitizeString = (str) => {
+  return str
+    .replace(/\\/g, "\\\\") // Chuyển dấu backslash thành \\
+    .replace(/'/g, "\\'") // Chuyển dấu nháy đơn thành \'
+    .replace(/"/g, '\\"') // Chuyển dấu nháy kép thành \"
+    .replace(/</g, "&lt;") // Chuyển ký tự < thành &lt;
+    .replace(/>/g, "&gt;"); // Chuyển ký tự > thành &gt;
+};
+
+
 // Hàm hiển thị danh sách từ
 function displayWords(words) {
   const wordList = document.getElementById("wordList");
@@ -170,14 +170,10 @@ function displayWords(words) {
                 
                     <div class="d-flex flex-row flex-fill">
                         <div class="col-4">
-                            <h5 class="card-title style="white-space: pre">${
-                              word.word
-                            }</h5>
+                            <h5 class="card-title" style="white-space: pre">${word.word}</h5>
                         </div>
                         <div class="col-8 ms-2">
-                            <h6 class="card-text" style="white-space: pre">${
-                              word.meaning
-                            }</h6>
+                            <h5 class="card-text" style="white-space: pre">${word.meaning}</h5>
                             </div>
                     </div>
                     <div>
@@ -186,13 +182,8 @@ function displayWords(words) {
                       <i class="fa fa-trash"></i>
                       </button>
                       <button class="btn btn-outline-success delete-word-btn"
-                        onclick="editWordShowModal(${
-                          word.id
-                        }, '${word.word.replace(
-        /'/g,
-        "\\'"
-      )}', '${word.meaning.replace(/'/g, "\\'")}')">
-                        <i class="fa fa-edit"></i>
+                       onclick="editWordShowModal(${word.id}, \`${sanitizeString(word.word)}\`, \`${sanitizeString(word.meaning)}\`)">
+                              <i class="fa fa-edit"></i>
                       </button>
 
                     </div>
@@ -222,23 +213,36 @@ deleteWordBtn.addEventListener("click", async (event) => {
   }
 });
 
-// modal sửa từ
+
 // modal sửa từ
 function editWordShowModal(id, word, meaning) {
   wordId = id; // Lưu id từ vào biến global để sử dụng khi cần thiết
-  // Chèn word và meaning vào các editor trong modal
-  wordEditorBox.root.innerHTML = word; // Đặt nội dung HTML vào word editor
-  meaningEditorBox.root.innerHTML = meaning; // Đặt nội dung HTML vào meaning editor
+
+  // Làm sạch dữ liệu đầu vào
+  const cleanWord = sanitizeString(word.trim());
+  const cleanMeaning = sanitizeString(meaning.trim());
+
+  const editWordForm = document.getElementById("editWordForm");
+  editWordForm.innerHTML = `
+    <label class="form-label">Word</label>
+    <div class="m-0 pb-0 pt-0 position-relative">
+      <textarea id="wordEditor" class="word-editor w-100 form-control">${cleanWord}</textarea>
+    </div>
+    <label class="form-label">Mean</label>
+    <div class="pb-0 pt-0 position-relative">
+      <textarea id="meaningEditor" class="meaning-editor w-100 form-control">${cleanMeaning}</textarea>
+    </div>`;
   editWordModal.show(); // Hiển thị modal sửa từ
 }
 
 // Hàm sửa từ
 saveEditWordBtn.addEventListener("click", async (event) => {
   event.preventDefault();
-
+  const wordEditor = document.getElementById("wordEditor");
+  const meaningEditor = document.getElementById("meaningEditor");
   // Lấy nội dung đã chỉnh sửa từ các editor
-  const word = wordEditorBox.root.innerHTML;
-  const meaning = meaningEditorBox.root.innerHTML;
+  const word = wordEditor.value.trim();
+  const meaning = meaningEditor.value.trim();
 
   try {
     // Gửi nội dung chỉnh sửa lên server
