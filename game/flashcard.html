@@ -4,211 +4,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcard App</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        .flashcard-container {
-            max-width: 600px;
-            margin: 50px auto;
-            text-align: center;
-        }
-
-        .flashcard {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: #f8f9fa;
-            position: relative;
-            min-height: 150px;
-            cursor: pointer;
-        }
-
-        .hidden-text {
-            visibility: hidden;
-        }
-
-        .visible-text {
-            visibility: visible;
-        }
-
-        .form-check {
-            text-align: left;
-        }
-
-        #progress-bar-container {
-            width: 100%;
-            background: #e9ecef;
-            border-radius: 10px;
-            overflow: hidden;
-            height: 20px;
-        }
-
-        #progress-bar {
-            width: 0%;
-            background: #007bff;
-            height: 100%;
-            transition: width 0.3s ease;
-        }
-    </style>
+    <title>Quizlet Clone - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <script src="../js/axios.min.js"></script>
+    <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
-    <div class="container flashcard-container">
-        <h1>Flashcard App</h1>
-        <div style="margin: 20px 0;">
-            <p id="progress-text">Progress: 0 / 5</p>
-            <div id="progress-bar-container" style="width: 100%; background: #e9ecef; border-radius: 10px;">
-                <div id="progress-bar" style="width: 0%; background: #007bff; height: 20px; border-radius: 10px;"></div>
+    <header id="header"></header>
+    <div class="container mt-4 border-1 pt-5 d-flex justify-content-center flex-column">
+        <div
+            class="flex-column d-flex justify-content-between flex-lg-row flex-sm-column border-1 border-primary alert p-lg-4 p-2 pt-lg-2 pb-lg-2 shadow">
+            <div type="button" class="d-flex flex-lg-column justify-content-between align-items-start" title="Thư viện"
+                id="backtofile">
+                <div class="d-flex align-items-center gap-2 mb-0">
+                    <i class="fa fa-folder fs-2 text-warning"></i>
+                    <span class="fs-4" id="fileName"></span>
+                </div>
+                <p class="m-0 p-0" id="quanity_word"></p>
+            </div>
+            <button type="button"
+                class="fs-5 btn btn-outline-success text-nowrap d-flex justify-content-center align-items-center p-4 pt-1 pb-2 m-2"
+                data-bs-toggle="modal" data-bs-target="#optionsModal">
+                Open Modal</button>
+        </div>
+        <div class="flashcard-container">
+            <h4 class="m-0">Flashcard App</h4>
+            <div class="mt-2 mb-2">
+                <p id="progress-text" class="mb-1">Progress: 0 / 5</p>
+                <div id="progress-bar-container" style="width: 100%; background: #e9ecef; border-radius: 10px;">
+                    <div id="progress-bar" style="width: 0%; background: #007bff; height: 20px; border-radius: 10px;">
+                    </div>
+                </div>
+            </div>
+            <!-- Flashcard -->
+
+            <div class="flashcard-item">
+                <!-- Flashcard -->
+                <div class="flashcard" id="flashcard">
+                    <div class="card-front">
+                        <p id="front-text"></p>
+                    </div>
+                    <div class="card-back">
+                        <p id="back-text"></p>
+                    </div>
+                </div>
+            </div>
+            
+           
+
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-center gap-4">
+                <button id="prev-btn" onclick="prevCard()" class="btn btn-secondary rounded-5" disabled><i class="fa fa-arrow-left"></i></button>
+                <button id="next-btn" onclick="nextCard()" class="btn btn-primary rounded-5"><i class="fa fa-arrow-right"></i></button>
+            </div>
+
+            <!--Modal Options -->
+            <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="optionsModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="optionsModalLabel">Flashcard Options</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Chế độ hiển thị</h5>
+            <!-- Buttons to choose display mode -->
+
+                            <div class="d-flex flex-row justify-content-between mt-4">
+                                <p class="m-0 ">Mặt trước</p>
+                                <select class="col-3 p-2 pt-1 pb-1  rounded-1" id="optionLang">
+                                    <option value="EN" selected>Từ</option>
+                                    <option value="VI">Nghĩa</option>
+                                </select>
+                            </div>
+                            <div class="d-flex flex-row justify-content-between mt-2">
+                                <p class="m-0 ">Hiển thị cả hai mặt của thẻ</p>
+                                <!-- toggle -->
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enableShowBoth">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row justify-content-between mt-2">
+                                <p class="m-0 ">Chuyển văn bản thành giọng nói</p>
+                                <!-- toggle -->
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enableTTS">
+                                </div>
+                            </div>
+
+                            <div class="mt-2 d-flex flex-column align-items-start">
+                                <p class="mb-1">Phím tắt</p>
+                                <!-- space, arrow-left, arrow-right -->
+                                <div class="alert border-1 border-secondary p-3 w-100">
+                                    <p class="d-flex justify-content-between m-0">Lật <span
+                                            class="fs-6 border-1 rounded-1 border-secondary alert p-1">Phím
+                                            cách</span></p>
+                                    <p class="d-flex justify-content-between">Truớc<i
+                                            class="border-1 rounded-1 border-secondary alert p-2 fa fa-arrow-left m-0"></i>
+                                    </p>
+                                    <p class="d-flex justify-content-between">Tiếp theo<i
+                                            class="border-1 rounded-1 border-secondary alert p-2 fa fa-arrow-right m-0"></i>
+                                    </p>
+                                    <p class="d-flex justify-content-between">Âm thanh<span
+                                            class="fs-5 border-1 rounded-1 border-secondary alert p-2 pt-0 pb-0 m-0">A</s>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save
+                                    Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-        <!-- Flashcard -->
-        <div class="flashcard" onclick="toggleMeaning()">
-            <h2 id="word"></h2>
-            <p id="meaning" class="hidden-text"></p>
-        </div>
 
-        <!-- Navigation Buttons -->
-        <div class="d-flex justify-content-between">
-            <button id="prev-btn" onclick="prevCard()" class="btn btn-secondary" disabled>Previous</button>
-            <button id="next-btn" onclick="nextCard()" class="btn btn-primary">Next</button>
-        </div>
 
-        <!-- Options -->
-        <div class="mt-4">
-            <h3>Flashcard Options</h3>
-            <div class="form-check">
-                <input type="radio" name="displayMode" id="show-term" value="term" class="form-check-input" checked>
-                <label for="show-term" class="form-check-label">Show Term Only</label>
-            </div>
-            <div class="form-check">
-                <input type="radio" name="displayMode" id="show-meaning" value="meaning" class="form-check-input">
-                <label for="show-meaning" class="form-check-label">Show Meaning Only</label>
-            </div>
-            <div class="form-check">
-                <input type="radio" name="displayMode" id="show-both" value="both" class="form-check-input">
-                <label for="show-both" class="form-check-label">Show Both</label>
-            </div>
-            <div class="form-check mt-3">
-                <input type="checkbox" id="enable-tts" class="form-check-input">
-                <label for="enable-tts" class="form-check-label">Enable Text-to-Speech (TTS)</label>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        const flashCards = [
-            { word: "Adventure", meaning: "A fun or exciting thing that you do" },
-            { word: "Journey", meaning: "A long trip" },
-            { word: "Destination", meaning: "The place you are going to" },
-            { word: "Challenge", meaning: "A difficult task" },
-            { word: "Success", meaning: "The achievement of a goal" }
-        ];
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 
-        let currentCardIndex = 0;
+        <script src="../js/main.js"></script>
+        <script src="../js/common.js"></script>
+        <script src="../js/AxiosService.js"></script>
+        <script src="../js/flashcard.js"></script>
 
-        // Hàm đọc văn bản thành giọng nói
-        function textToSpeech(text) {
-            const speech = new SpeechSynthesisUtterance(text);
-            speech.lang = "en-US";
-            speechSynthesis.speak(speech);
-        }
 
-        // Tải flash card dựa trên chế độ hiển thị
-        function loadFlashCard() {
-            const wordElement = document.getElementById("word");
-            const meaningElement = document.getElementById("meaning");
-            const progressText = document.getElementById("progress-text");
-            const progressBar = document.getElementById("progress-bar");
-
-            const displayMode = document.querySelector('input[name="displayMode"]:checked').value;
-            const enableTTS = document.getElementById("enable-tts").checked;
-
-            const currentCard = flashCards[currentCardIndex];
-
-            // Hiển thị theo chế độ được chọn
-            if (displayMode === "term") {
-                wordElement.textContent = currentCard.word;
-                meaningElement.textContent = currentCard.meaning;
-                meaningElement.classList.add("hidden-text");
-            } else if (displayMode === "meaning") {
-                wordElement.textContent = currentCard.word;
-                meaningElement.textContent = currentCard.meaning;
-                meaningElement.classList.add("hidden-text");
-            } else if (displayMode === "both") {
-                wordElement.textContent = currentCard.word;
-                meaningElement.textContent = currentCard.meaning;
-                meaningElement.classList.remove("hidden-text");
-            }
-
-            // TTS cho chế độ hiển thị
-            if (enableTTS) {
-                const ttsText = displayMode === "both"
-                    ? `${currentCard.word}. ${currentCard.meaning}`
-                    : displayMode === "term"
-                        ? currentCard.word
-                        : currentCard.meaning;
-
-                textToSpeech(ttsText);
-            }
-
-            // Cập nhật trạng thái nút và tiến độ
-            document.getElementById("prev-btn").disabled = currentCardIndex === 0;
-            document.getElementById("next-btn").textContent =
-                currentCardIndex === flashCards.length - 1 ? "Restart" : "Next";
-            progressText.textContent = `Progress: ${currentCardIndex + 1} / ${flashCards.length}`;
-            progressBar.style.width = `${((currentCardIndex + 1) / flashCards.length) * 100}%`;
-        }
-
-        // Chuyển đến flashcard tiếp theo
-        function nextCard() {
-            if (currentCardIndex < flashCards.length - 1) {
-                currentCardIndex++;
-            } else {
-                currentCardIndex = 0; // Lặp lại từ đầu
-            }
-            loadFlashCard();
-        }
-
-        // Quay lại flashcard trước đó
-        function prevCard() {
-            if (currentCardIndex > 0) {
-                currentCardIndex--;
-            }
-            loadFlashCard();
-        }
-
-        // Lắng nghe sự kiện thay đổi tùy chọn
-        document.querySelectorAll('input[name="displayMode"]').forEach(radio => {
-            radio.addEventListener("change", loadFlashCard);
-        });
-
-        // Toggle nghĩa khi click vào thẻ hoặc nhấn Space
-        function toggleMeaning() {
-            const meaningElement = document.getElementById("meaning");
-            meaningElement.classList.toggle("hidden-text");
-            meaningElement.classList.toggle("visible-text");
-        }
-
-        // Thêm sự kiện bàn phím
-        document.addEventListener("keydown", (event) => {
-            switch (event.code) {
-                case "Space":
-                    event.preventDefault();
-                    toggleMeaning(); // Hiển thị hoặc ẩn nghĩa khi nhấn Space
-                    break;
-                case "ArrowRight":
-                    nextCard();
-                    break;
-                case "ArrowLeft":
-                    prevCard();
-                    break;
-            }
-        });
-
-        // Khởi tạo trang
-        document.addEventListener("DOMContentLoaded", loadFlashCard);
-    </script>
 </body>
 
 </html>

@@ -121,7 +121,7 @@
 
 }
 
-.meaning-editor, .word-editor, .answers-btn{
+.meaning-editor, .word-editor, .answers-btn {
     height: 100px;
     overflow-y: auto;
     /* border: 1px solid #00b874; */
@@ -166,7 +166,7 @@
 .question-widget {
     /* max-height: 100%; */
     max-height: 300px;
-    overflow-y: auto; 
+    overflow-y: auto;
     display: flex;
     flex-wrap: wrap;
     margin: 0px;
@@ -177,4 +177,79 @@
 .question-widget button {
     width: 28%;
     padding: 10px;
+}
+
+
+/* flash card */
+.flashcard-container {
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.flashcard-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.flashcard {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    /* perspective: 1000px; */
+    cursor: pointer;
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.card-front {
+    background-color: #ffffff;
+    transform: rotateY(0deg);
+}
+
+.card-back {
+    background-color: #f8f9fa;
+    transform: rotateY(180deg);
+}
+
+.flashcard.is-flipped .card-front {
+    transform: rotateY(180deg);
+}
+
+.flashcard.is-flipped .card-back {
+    transform: rotateY(360deg);
+}
+
+
+
+#progress-bar-container {
+    width: 100%;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+}
+
+#progress-bar {
+    width: 0%;
+    background: #007bff;
+    height: 100%;
+    transition: width 0.3s ease;
 }
