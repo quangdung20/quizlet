@@ -75,8 +75,8 @@ function renderFiles(files) {
                   </div>
               </div>
             <div class="d-flex justify-content-end gap-2 p-3">
-                  <button class="btn btn-outline-primary button-action p-2 m-2 me-0" onclick="editFile(${file.id})"><i class="fa fa-edit fs-5"></i></button>
-                  <button class="btn btn-outline-danger button-action p-2 m-2 me-0" onclick="deleteFileShow(${file.id})"><i class="fa fa-trash fs-5"></i></button>
+                  <button class="btn btn-outline-primary button-action p-2 m-2 me-0" onclick="editFile('${file.id}')"><i class="fa fa-edit fs-5"></i></button>
+                  <button class="btn btn-outline-danger button-action p-2 m-2 me-0" onclick="deleteFileShow('${file.id}')"><i class="fa fa-trash fs-5"></i></button>
             </div>
         </div>
       `;
@@ -111,7 +111,7 @@ async function addFile() {
 
 // Hàm mở modal và điền tên file hiện tại khi sửa file
 async function editFile(fileId) {
-  currentFileId = fileId;
+  currentFileId = fileId;  
   newFileName.value = "";
   const fileNameLabel = document.getElementById("fileNameLabel");
   fileNameLabel.innerHTML =
@@ -128,7 +128,8 @@ async function updateFile() {
     showToast("Tên danh mục không được để trống!", "warning");
     return;
   }
-
+  console.log(currentFileId);
+  
   try {
     const response = await axiosservice.put(`/api/files/${currentFileId}`, {
       name: newFileNameValue,

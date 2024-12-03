@@ -102,13 +102,34 @@ def add_file(folder_id):
 
     result = files_collection.insert_one(file)
 
-    # Cập nhật số lượng file trong folder
-    files_collection.update_one(
+    # Sửa: Cập nhật số lượng file trong folder
+    folders_collection.update_one(
         {"_id": ObjectId(folder_id)},
         {"$inc": {"quantity": 1}}
     )
 
     return jsonify({"message": "File created successfully", "id": str(result.inserted_id)}), 201
+
+@app.route('/api/files/<string:file_id>', methods=['PUT'])
+def update_file(file_id):
+    data = request.json
+    name = data.get('name')
+
+    if not name:
+        return jsonify({"error": "File name is required"}), 400
+
+    # Tìm file trong collection
+    file = files_collection.find_one({"_id": ObjectId(file_id)})
+    if not file:
+        return jsonify({"error": "File not found"}), 404
+
+    # Cập nhật tên file
+    files_collection.update_one(
+        {"_id": ObjectId(file_id)},
+        {"$set": {"name": name}}
+    )
+
+    return jsonify({"message": "File name updated successfully"}), 200
 
 
 # API: Lấy danh sách từ trong file
