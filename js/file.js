@@ -16,6 +16,7 @@ const quizGameBtn = document.getElementById("quizGameBtn");
 const flashcardGameBtn = document.getElementById("flashcardGameBtn");
 const writeGameBtn = document.getElementById("writeGameBtn");
 const listenGameBtn = document.getElementById("listenGameBtn");
+  const wordList = document.getElementById("wordList");
 
 const axiosservice = new AxiosService();
 let fileName = "";
@@ -33,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const query = event.target.value; // Lấy nội dung tìm kiếm
     filterWords(query); // Lọc danh sách từ
   });
-
   addWordBtn.addEventListener("click", function () {
     window.location.href = `add-word.html?folder=${folderId}&file=${fileId}&name=${fileName}`;
   });
@@ -96,8 +96,8 @@ function RenderFileSlide(files) {
                     <div class="card cart_item_slide bg-secondary" style="width: 18rem;">
                         <div class="card-body position-relative">
                            <div class="input-gr">
-                              <h5 class="card-title">${file.name}</h5>
-                              <p class="card-text m-0">ID: ${file.quantity}</p>
+                              <h5 class="card-title white-space-nowrap">${file.name}</h5>
+                              <p class="card-text m-0">Words: ${file.quantity}</p>
                            </div>
                             <button class="btn btn-primary btnViewFile d-flex p-2 align-items-center" onclick="CardFileDetail(${file.id}, '${file.name}')">
                                 Xem chi tiết
@@ -120,6 +120,7 @@ function CardFileDetail(fileId) {
 
 // ham lấy danh sách từ trong file
 async function fetchWords(fileId) {
+  showLoading(); // Hiển thị loading
   try {
     const response = await axiosservice.get(`/api/files/${fileId}/words`);
     allWords = response.data; // Lưu danh sách từ vào biến toàn cục
@@ -129,7 +130,10 @@ async function fetchWords(fileId) {
     document.getElementById(
       "quanity_word"
     ).innerHTML = `Words: ${allWords.length}`;
-    displayWords(allWords); // Hiển thị toàn bộ từ
+    setTimeout(() => {
+      displayWords(allWords); // Hiển thị toàn bộ từ
+      hideLoading();
+    }, 1000);
   } catch (error) {
     console.error("Error fetching words:", error);
     showToast("Không thể tải danh sách từ. Vui lòng thử lại!", "error");
@@ -148,13 +152,13 @@ const sanitizeString = (str) => {
 
 // Hàm hiển thị danh sách từ
 function displayWords(words) {
-  const wordList = document.getElementById("wordList");
 
   wordList.innerHTML = ""; // Xóa nội dung cũ
-
+  
   if (words.length === 0) {
     wordList.innerHTML = `<p class="text-center alert alert-info">Không tìm thấy từ nào! 😁</p>`;
   } else {
+    // hiiên thị loading    
     words.forEach((word, index) => {
       const wordItem = document.createElement("div");
       wordItem.classList.add("word-item");
@@ -164,10 +168,14 @@ function displayWords(words) {
                 
                     <div class="d-flex flex-row flex-fill">
                         <div class="col-4">
-                            <h5 class="card-title" style="white-space: pre">${word.word}</h5>
+                            <h5 class="card-title" style="white-space: pre">${
+                              word.word
+                            }</h5>
                         </div>
                         <div class="col-8 ms-2">
-                            <h5 class="card-text" style="white-space: pre">${word.meaning}</h5>
+                            <h5 class="card-text" style="white-space: pre">${
+                              word.meaning
+                            }</h5>
                             </div>
                     </div>
                     <div>
@@ -176,7 +184,11 @@ function displayWords(words) {
                       <i class="fa fa-trash"></i>
                       </button>
                       <button class="btn btn-outline-success delete-word-btn"
-                       onclick="editWordShowModal(${word.id}, \`${sanitizeString(word.word)}\`, \`${sanitizeString(word.meaning)}\`)">
+                       onclick="editWordShowModal(${
+                         word.id
+                       }, \`${sanitizeString(word.word)}\`, \`${sanitizeString(
+        word.meaning
+      )}\`)">
                               <i class="fa fa-edit"></i>
                       </button>
 

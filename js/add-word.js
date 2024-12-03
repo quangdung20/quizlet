@@ -115,7 +115,6 @@ saveWordsButton.addEventListener("click", async function () {
       });
 
       const fileName = document.getElementById("fileName").value;
-      console.log(words, fileName);
 
       // Gửi dữ liệu từ và nghĩa tới API
       const response = await axiosservice.post(`/api/files/${fileId}/words`, {
@@ -173,10 +172,12 @@ document
       const sheet = workbook.Sheets[sheetName];
 
       // Chuyển đổi dữ liệu Excel thành JSON và xử lý những hàng trống
-      newData = XLSX.utils.sheet_to_json(sheet, {
-        header: ["word", "meaning"],
-        defval: "",
-      }).filter(row => row.word.trim() !== "" && row.meaning.trim() !== "");
+      newData = XLSX.utils
+        .sheet_to_json(sheet, {
+          header: ["word", "meaning"],
+          defval: "",
+        })
+        .filter((row) => row.word.trim() !== "" && row.meaning.trim() !== "");
 
       // Cập nhật dữ liệu vào Tabulator
       table.setData(newData);
@@ -189,7 +190,6 @@ document.getElementById("saveDataBtn").addEventListener("click", function () {
   const tableData = table.getData();
 
   addWordModal.hide();
-  console.log(tableData);
   try {
     tableData.forEach(({ word, meaning }) => {
       addWordBox(word, meaning);
@@ -204,8 +204,6 @@ document.getElementById("saveDataBtn").addEventListener("click", function () {
 function addWordBox(word, meaning) {
   const cleanWord = word.trim();
   const cleanMeaning = meaning.trim();
-
-  console.log(cleanWord, cleanMeaning);
 
   const newWordBox = document.createElement("div");
   const wordEditorId = `word-editor-${wordEditors.length}`;

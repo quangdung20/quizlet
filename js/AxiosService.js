@@ -1,7 +1,7 @@
 class AxiosService {
   constructor(baseURL) {
     this.axiosInstance = axios.create({
-      baseURL: baseURL || "http://127.0.0.1:5000", // URL mặc định
+      baseURL: baseURL || "https://quizlet-1.onrender.com", // URL mặc định
       headers: {
         "Content-Type": "application/json", // Header mặc định cho JSON
       },
