@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function PlayGame(button, game) {
   button.addEventListener("click", () => {
-    window.location.href = `game/${game}.html?folder=${folderId}&file=${fileId}`;
+    window.location.href = `${game}.html?folder=${folderId}&file=${fileId}`;
   });
 }
 function filterWords(query) {
