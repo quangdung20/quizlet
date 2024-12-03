@@ -1,35 +1,35 @@
-// // Lấy tham số từ URL
-// const urlParams = new URLSearchParams(window.location.search);
-// const folderId = urlParams.get("folder");
-// const fileId = urlParams.get("file");
+// Lấy tham số từ URL
+const urlParams = new URLSearchParams(window.location.search);
+const folderId = urlParams.get("folder");
+const fileId = urlParams.get("file");
 
-// // Các phần tử DOM
-// const fileNameLabel = document.getElementById("fileName");
-// const quantityWord = document.getElementById("quanity_word");
-// const BacktoFile = document.getElementById("backtofile");
-// const optionLang = document.getElementById("optionLang");
-// // Dịch vụ Axios
-// const axiosservice = new AxiosService();
-// let originalQuestions = [];
-// document.addEventListener("DOMContentLoaded", () => {
-//   fetchWords(fileId); // Lấy danh sách từ
-//   BacktoFile.addEventListener("click", () => {
-//     window.location.href = `/file.html?folder=${folderId}&file=${fileId}`;
-//   });
-// });
+// Các phần tử DOM
+const fileNameLabel = document.getElementById("fileName");
+const quantityWord = document.getElementById("quanity_word");
+const BacktoFile = document.getElementById("backtofile");
+const optionLang = document.getElementById("optionLang");
+// Dịch vụ Axios
+const axiosservice = new AxiosService();
+let originalQuestions = [];
+document.addEventListener("DOMContentLoaded", () => {
+  fetchWords(fileId); // Lấy danh sách từ
+  BacktoFile.addEventListener("click", () => {
+    window.location.href = `file.html?folder=${folderId}&file=${fileId}`;
+  });
+});
 
-// async function fetchWords(fileId) {
-//   try {
-//     const response = await axiosservice.get(`/api/files/${fileId}/words`);
-//     originalQuestions = response.data;
-//     insertOptionLang(originalQuestions[1]);
-//     fileNameLabel.innerHTML = response.name || "File Name";
-//     quantityWord.innerHTML = `Words: ${response.name.length}`;
-//   } catch (error) {
-//     console.error("Error fetching words:", error);
-//     showToast("Không thể tải danh sách từ. Vui lòng thử lại!", "error");
-//   }
-// }
+async function fetchWords(fileId) {
+  try {
+    const response = await axiosservice.get(`/api/files/${fileId}/words`);
+    originalQuestions = response.data;
+    insertOptionLang(originalQuestions[1]);
+    fileNameLabel.innerHTML = response.name || "File Name";
+    quantityWord.innerHTML = `Words: ${response.name.length}`;
+  } catch (error) {
+    console.error("Error fetching words:", error);
+    showToast("Không thể tải danh sách từ. Vui lòng thử lại!", "error");
+  }
+}
 
 // // Hàm chọn ngôn ngữ exempale lang = {wordLang: "en-US", meaningLang: "vi-VN"}
 // function insertOptionLang(lang) {

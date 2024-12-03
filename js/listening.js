@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchWords(fileId);
 
   BacktoFile.addEventListener("click", () => {
-    window.location.href = `/file.html?folder=${folderId}&file=${fileId}`;
+    window.location.href = `file.html?folder=${folderId}&file=${fileId}`;
   });
   hintBtn.addEventListener("click", () => {
     console.log(question);

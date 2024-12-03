@@ -22,7 +22,7 @@ let score = 0; // Điểm số
 document.addEventListener("DOMContentLoaded", () => {
   fetchWords(fileId); // Lấy danh sách từ
   BacktoFile.addEventListener("click", () => {
-    window.location.href = `/file.html?folder=${folderId}&file=${fileId}`;
+    window.location.href = `file.html?folder=${folderId}&file=${fileId}`;
   });
 });
 
