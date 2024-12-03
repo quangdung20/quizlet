@@ -9,7 +9,7 @@ app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 # MongoDB Atlas URI (thay thế bằng connection string thực tế)
-MONGO_URI = MONGODB_URI
+MONGO_URI = "mongodb+srv://quangdung812202:quangdung812202@cluster0.z1s7f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(MONGO_URI)
 
 # Kết nối cơ sở dữ liệu
