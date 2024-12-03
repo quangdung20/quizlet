@@ -65,7 +65,7 @@ function renderFiles(files) {
       fileItem.classList.add("col");
       fileItem.innerHTML = `
             <div class="w-100 card box-file d-flex flex-row" id="file-${file.id}">
-              <div  type="button" class="card-body d-flex flex-row align-items-center" onclick="CardFileDetail(${file.id})">
+              <div  type="button" class="card-body d-flex flex-row align-items-center" onclick="CardFileDetail('${file.id}')">
                   <div class="d-flex justify-content-between box_icon_file">
                       <img src="image/setting-file.png" class="icon-file" alt="file" />
                   </div>

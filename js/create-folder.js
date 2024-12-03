@@ -63,6 +63,8 @@ function displayFolders(folders) {
   } else {
     // Hiển thị các folder dưới dạng Bootstrap card
     folders.forEach((folder, index) => {
+      console.log(folder.id);
+      
       const card = document.createElement("div");
       card.className = "col";
 
@@ -90,9 +92,10 @@ function displayFolders(folders) {
             <div class="d-flex flex-column flex-fill justify-content-between overflow-hidden">
               <h5 class="card-title folderName">${folder.name}</h5>
               <p class="m-0">Học phần: ${folder.quantity}</p>
-              <button class="btn btn-primary w-100 mt-auto" onclick="viewFolder(${
+              <button class="btn btn-primary w-100 mt-auto" onclick="viewFolder('${
                 folder.id
-              }, '${folder.name}')">Xem</button>
+              }', '${folder.name}')">Xem</button>
+
             </div>
           </div>
         </div>
@@ -131,6 +134,7 @@ searchInput.addEventListener("input", searchFolders);
 function viewFolder(folderId, folderName) {
   window.location.href = `folder.html?id=${folderId}&name=${folderName}`;
 }
+
 // Xử lý sự kiện khi người dùng submit form tạo folder
 async function createFolder() {
   const name = folderNameInput.value.trim();
