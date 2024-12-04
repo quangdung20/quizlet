@@ -16,7 +16,7 @@ const quizGameBtn = document.getElementById("quizGameBtn");
 const flashcardGameBtn = document.getElementById("flashcardGameBtn");
 const writeGameBtn = document.getElementById("writeGameBtn");
 const listenGameBtn = document.getElementById("listenGameBtn");
-  const wordList = document.getElementById("wordList");
+const wordList = document.getElementById("wordList");
 
 const axiosservice = new AxiosService();
 let fileName = "";
@@ -147,16 +147,14 @@ const sanitizeString = (str) => {
     .replace(/>/g, "&gt;"); // Chuyển ký tự > thành &gt;
 };
 
-
 // Hàm hiển thị danh sách từ
 function displayWords(words) {
-
   wordList.innerHTML = ""; // Xóa nội dung cũ
-  
+
   if (words.length === 0) {
     wordList.innerHTML = `<p class="text-center alert alert-info">Không tìm thấy từ nào! 😁</p>`;
   } else {
-    // hiiên thị loading    
+    // hiiên thị loading
     words.forEach((word, index) => {
       const wordItem = document.createElement("div");
       wordItem.classList.add("word-item");
@@ -210,13 +208,13 @@ deleteWordBtn.addEventListener("click", async (event) => {
   try {
     await axiosservice.delete(`/api/words/${wordId}`);
     fetchWords(fileId);
+    deleteWordModal.hide();
     showToast("Xóa từ thành công!", "success");
   } catch (error) {
     console.error("Error deleting word:", error);
     showToast("Không thể xóa từ. Vui lòng thử lại!", "error");
   }
 });
-
 
 // modal sửa từ
 function editWordShowModal(id, word, meaning) {
