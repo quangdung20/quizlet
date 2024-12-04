@@ -74,7 +74,10 @@
 
 }
 
-.box-file:hover .button-action i {
+.button-action {
+    max-height: 40px;
+    font: 1em sans-serif;
+}.box-file:hover .button-action i {
     color: #ffffff;
 }
 

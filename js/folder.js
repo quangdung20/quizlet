@@ -64,17 +64,17 @@ function renderFiles(files) {
       const fileItem = document.createElement("div");
       fileItem.classList.add("col");
       fileItem.innerHTML = `
-            <div class="w-100 card box-file d-flex flex-row" id="file-${file.id}">
-              <div  type="button" class="card-body d-flex flex-row align-items-center" onclick="CardFileDetail('${file.id}')">
-                  <div class="d-flex justify-content-between box_icon_file">
+            <div class="w-100 box-file d-flex flex-row" id="file-${file.id}">
+              <div  type="button" class="card-body d-flex flex-row align-items-center col-10 w-50 ms-lg-3" onclick="CardFileDetail('${file.id}')">
+                  <div class="d-lg-flex justify-content-between box_icon_file d-none">
                       <img src="image/setting-file.png" class="icon-file" alt="file" />
                   </div>
-                  <div class="d-flex flex-column">
-                    <h5 class="card-title m-3 mt-0 mb-0 d-flex justify-content-start">${file.name}</h5>
+                  <div class="d-flex flex-column w-100">
+                    <h5 class="card-title m-3 mt-0 mb-0 d-flex justify-content-start white-space-nowrap">${file.name}</h5>
                     <p class="card-title m-3 mt-0 mb-0 d-flex justify-content-start fs-6">Học phần: ${file.quantity} terms</p>
                   </div>
               </div>
-            <div class="d-flex justify-content-end gap-2 p-3">
+            <div class="d-flex justify-content-end gap-2 p-3" col-12>
                   <button class="btn btn-outline-primary button-action p-2 m-2 me-0" onclick="editFile('${file.id}')"><i class="fa fa-edit fs-5"></i></button>
                   <button class="btn btn-outline-danger button-action p-2 m-2 me-0" onclick="deleteFileShow('${file.id}')"><i class="fa fa-trash fs-5"></i></button>
             </div>

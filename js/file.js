@@ -59,7 +59,6 @@ async function displayFilesInCarousel(folderId) {
   try {
     const response = await axiosservice.get(`/api/folders/${folderId}/files`);
     const files = response;
-    console.log(response);
     RenderFileSlide(files);
   } catch (error) {
     console.error("Error displaying files in carousel:", error);
@@ -99,7 +98,7 @@ function RenderFileSlide(files) {
                               <h5 class="card-title white-space-nowrap">${file.name}</h5>
                               <p class="card-text m-0">Words: ${file.quantity}</p>
                            </div>
-                            <button class="btn btn-primary btnViewFile d-flex p-2 align-items-center" onclick="CardFileDetail(${file.id}, '${file.name}')">
+                            <button class="btn btn-primary btnViewFile d-flex p-2 align-items-center" onclick="CardFileDetail('${file.id}', '${file.name}')">
                                 Xem chi tiết
                             </button>
                         </div>
@@ -126,7 +125,6 @@ async function fetchWords(fileId) {
     allWords = response.data; // Lưu danh sách từ vào biến toàn cục
     fileNameLabel.innerHTML = response.name;
     fileName = response.name;
-    console.log(allWords);
     document.getElementById(
       "quanity_word"
     ).innerHTML = `Words: ${allWords.length}`;
@@ -180,13 +178,13 @@ function displayWords(words) {
                     </div>
                     <div>
                       <button class="btn btn-outline-danger delete-word-btn"
-                      onclick="deleteWordShowModal(${word.id})">
+                      onclick="deleteWordShowModal('${word.id}')">
                       <i class="fa fa-trash"></i>
                       </button>
                       <button class="btn btn-outline-success delete-word-btn"
-                       onclick="editWordShowModal(${
+                       onclick="editWordShowModal('${
                          word.id
-                       }, \`${sanitizeString(word.word)}\`, \`${sanitizeString(
+                       }', \`${sanitizeString(word.word)}\`, \`${sanitizeString(
         word.meaning
       )}\`)">
                               <i class="fa fa-edit"></i>

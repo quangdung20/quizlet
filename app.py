@@ -253,6 +253,18 @@ def delete_file(file_id):
     )
 
     return jsonify({"message": "File deleted successfully"}), 200
+# API sỬA từ
+
+@app.route('/api/words/<string:word_id>', methods=['PUT'])
+def update_word(word_id):
+    data = request.json
+    word = data.get('word')
+    meaning = data.get('meaning')
+    if not word or not meaning:
+        return jsonify({"error": "Word and meaning are required"}), 400
+
+    words_collection.update_one({"_id": ObjectId(word_id)}, {"$set": {"word": word, "meaning": meaning }})
+    return jsonify({"message": "Word updated successfully"}), 200
 
 
 # API: Xóa từ trong file
