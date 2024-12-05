@@ -29,10 +29,9 @@
             <button type="button"
                 class="fs-5 btn btn-outline-success text-nowrap d-flex justify-content-center align-items-center p-4 pt-1 pb-2 m-2"
                 data-bs-toggle="modal" data-bs-target="#optionsModal">
-                Open Modal</button>
+                Tùy chọn</button>
         </div>
         <div class="flashcard-container">
-            <h4 class="m-0">Flashcard App</h4>
             <div class="mt-2 mb-2">
                 <p id="progress-text" class="mb-1">Progress: 0 / 5</p>
                 <div id="progress-bar-container" style="width: 100%; background: #e9ecef; border-radius: 10px;">
@@ -46,24 +45,34 @@
                 <!-- Flashcard -->
                 <div class="flashcard" id="flashcard">
                     <div class="card-front">
-                        <p id="front-text"></p>
+                        <p id="front-text" class="answers-btn h-auto"></p>
                     </div>
                     <div class="card-back">
-                        <p id="back-text"></p>
+                        <p id="back-text" class="answers-btn h-auto"></p>
+                    </div>
+                </div>
+                <div class="d-flex gap-4 align-items-center p-2 w-100 justify-content-between">
+                    <div class="d-flex justify-content-start col-lg-2">
+                        <button class="btn btn-outline-primary rounded-5 ps-2 pe-2" onclick="speakWord()"><i
+                                class="fa fa-volume-up"></i></button>
+                    </div>
+                    <div class="col-lg-8">
+                        <button id="prev-btn" onclick="prevCard()" class="btn btn-secondary rounded-5" disabled><i
+                                class="fa fa-arrow-left"></i></button>
+                        <button id="next-btn" onclick="nextCard()" class="btn btn-primary rounded-5"><i
+                                class="fa fa-arrow-right"></i></button>
+                    </div>
+                    <div class="col-lg-2">
+                        <button id="autoplayBtn" class="btn text-secondary"><i
+                                class="fs-5 fa fa-play"></i></button>
+                        <button onclick="mixCards()" id="mixBtn" class="btn text-secondary border-0 rounded-5 ps-2"><i
+                                class="fs-4 fa fa-random"></i></button>
                     </div>
                 </div>
             </div>
 
-
-
-
             <!-- Navigation Buttons -->
-            <div class="d-flex justify-content-center gap-4">
-                <button id="prev-btn" onclick="prevCard()" class="btn btn-secondary rounded-5" disabled><i
-                        class="fa fa-arrow-left"></i></button>
-                <button id="next-btn" onclick="nextCard()" class="btn btn-primary rounded-5"><i
-                        class="fa fa-arrow-right"></i></button>
-            </div>
+           
 
             <!--Modal Options -->
             <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="optionsModalLabel"
@@ -119,7 +128,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="saveChangesBtn">Save
                                     Changes</button>
                             </div>
                         </div>

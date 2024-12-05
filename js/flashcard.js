@@ -8,6 +8,22 @@ const fileNameLabel = document.getElementById("fileName");
 const quantityWord = document.getElementById("quanity_word");
 const BacktoFile = document.getElementById("backtofile");
 const optionLang = document.getElementById("optionLang");
+const saveChangesBtn = document.getElementById("saveChangesBtn");
+const autoplayBtn = document.getElementById("autoplayBtn");
+
+const flashcard = document.querySelector("#flashcard");
+const frontText = document.querySelector("#front-text");
+const backText = document.querySelector("#back-text");
+const progressText = document.querySelector("#progress-text");
+const progressBar = document.querySelector("#progress-bar");
+const enableShowBoth = document.querySelector("#enableShowBoth");
+const autoSpeak = document.querySelector("#enableTTS");
+let currentIndex = 0;
+let showBoth = false;
+let isFlipped = false;
+let langVoice = "";
+let isMix = false;
+let isAutoplay = false;
 // Dịch vụ Axios
 const axiosservice = new AxiosService();
 let originalQuestions = [];
@@ -16,7 +32,30 @@ document.addEventListener("DOMContentLoaded", () => {
   BacktoFile.addEventListener("click", () => {
     window.location.href = `file.html?folder=${folderId}&file=${fileId}`;
   });
+  autoplayBtn.addEventListener("click", () => {
+    isAutoplay = !isAutoplay;
+    autoplayBtn.classList.toggle("text-secondary", !isAutoplay);
+    autoplayBtn.classList.toggle("text-primary", isAutoplay);
+    updateFlashcard();
+  });
 });
+saveChangesBtn.addEventListener("click", () => {
+  Modes();
+  updateFlashcard();
+  showToast("Thay đổi đã được lưu!", "success");
+});
+
+
+function Modes() {
+  langVoice = optionLang.value;
+  const Modes = {
+    showBoth: enableShowBoth.checked,
+    langVoice: langVoice,
+    autoSpeak: autoSpeak.checked,
+  };
+
+  sessionStorage.setItem("Modes", JSON.stringify(Modes));
+}
 
 async function fetchWords(fileId) {
   try {
@@ -24,207 +63,180 @@ async function fetchWords(fileId) {
     originalQuestions = response.data;
     insertOptionLang(originalQuestions[1]);
     fileNameLabel.innerHTML = response.name || "File Name";
-    quantityWord.innerHTML = `Words: ${response.name.length}`;
+    quantityWord.innerHTML = `Words: ${response.data.length}`;
+    updateFlashcard();
   } catch (error) {
     console.error("Error fetching words:", error);
     showToast("Không thể tải danh sách từ. Vui lòng thử lại!", "error");
   }
 }
 
-// // Hàm chọn ngôn ngữ exempale lang = {wordLang: "en-US", meaningLang: "vi-VN"}
-// function insertOptionLang(lang) {
-//   // Danh sách ngôn ngữ với tên và mã
-//   const langs = [
-//     { English: "en-US" },
-//     { VietNam: "vi-VN" },
-//     { Korean: "ko-KR" },
-//   ];
+// Trộn danh sách từ
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+}
 
-//   // Ngôn ngữ được chọn cho từ và nghĩa
-//   const wordLang = lang.langWord;
-//   const meaningLang = lang.langMeaning;
+function textToSpeech() {
+  const currentCard = originalQuestions[currentIndex];
+  const Modes = JSON.parse(sessionStorage.getItem("Modes"));
 
-//   // Xóa các tùy chọn cũ nếu có
-//   optionLang.innerHTML = "";
+  const text = isFlipped
+    ? currentCard.meaning
+    : Modes.showBoth
+    ? `${currentCard.word}. ${currentCard.meaning}`
+    : currentCard.word;
 
-//   // Thêm tùy chọn cho `wordLang`
-//   langs.forEach((item) => {
-//     const [key, value] = Object.entries(item)[0];
-//     const option = document.createElement("option");
-//     if (value === wordLang) {
-//       option.value = value;
-//       option.textContent = `${key}`;
-//       option.selected = true;
-//       optionLang.appendChild(option);
-//       }
-//       if (value === meaningLang) {
-//           option.value = value;
-//           option.textContent = `${key}`;
-//           optionLang.appendChild(option);
-//         }
-//   });
-// }
+  speakText(text, Modes.langVoice);
+} 
+function speakWord() {
+  const currentCard = originalQuestions[currentIndex];
+  
+  speakText(currentCard.word, langVoice);
+}
 
-
-
-// // Tải flash card dựa trên chế độ hiển thị
-// function loadFlashCard() {
-//   const wordElement = document.getElementById("word");
-//   const meaningElement = document.getElementById("meaning");
-//   const progressText = document.getElementById("progress-text");
-//   const progressBar = document.getElementById("progress-bar");
-
-//   const displayMode = document.querySelector(
-//     'input[name="displayMode"]:checked'
-//   ).value;
-//   const enableTTS = document.getElementById("enable-tts").checked;
-
-//   const currentCard = flashCards[currentCardIndex];
-
-//   // Hiển thị theo chế độ được chọn
-//   if (displayMode === "term") {
-//     wordElement.textContent = currentCard.word;
-//     meaningElement.textContent = currentCard.meaning;
-//     meaningElement.classList.add("hidden-text");
-//   } else if (displayMode === "meaning") {
-//     wordElement.textContent = currentCard.word;
-//     meaningElement.textContent = currentCard.meaning;
-//     meaningElement.classList.add("hidden-text");
-//   } else if (displayMode === "both") {
-//     wordElement.textContent = currentCard.word;
-//     meaningElement.textContent = currentCard.meaning;
-//     meaningElement.classList.remove("hidden-text");
-//   }
-
-//   // TTS cho chế độ hiển thị
-//   if (enableTTS) {
-//     const ttsText =
-//       displayMode === "both"
-//         ? `${currentCard.word}. ${currentCard.meaning}`
-//         : displayMode === "term"
-//         ? currentCard.word
-//         : currentCard.meaning;
-
-//     textToSpeech(ttsText);
-//   }
-
-//   // Cập nhật trạng thái nút và tiến độ
-//   document.getElementById("prev-btn").disabled = currentCardIndex === 0;
-//   document.getElementById("next-btn").textContent =
-//     currentCardIndex === flashCards.length - 1 ? "Restart" : "Next";
-//   progressText.textContent = `Progress: ${currentCardIndex + 1} / ${
-//     flashCards.length
-//   }`;
-//   progressBar.style.width = `${
-//     ((currentCardIndex + 1) / flashCards.length) * 100
-//   }%`;
-// }
-
-// // Chuyển đến flashcard tiếp theo
-// function nextCard() {
-//   if (currentCardIndex < flashCards.length - 1) {
-//     currentCardIndex++;
-//   } else {
-//     currentCardIndex = 0; // Lặp lại từ đầu
-//   }
-//   loadFlashCard();
-// }
-
-// // Quay lại flashcard trước đó
-// function prevCard() {
-//   if (currentCardIndex > 0) {
-//     currentCardIndex--;
-//   }
-//   loadFlashCard();
-// }
-
-// // Lắng nghe sự kiện thay đổi tùy chọn
-// document.querySelectorAll('input[name="displayMode"]').forEach((radio) => {
-//   radio.addEventListener("change", loadFlashCard);
-// });
-
-// // Toggle nghĩa khi click vào thẻ hoặc nhấn Space
-// function toggleMeaning() {
-//   const meaningElement = document.getElementById("meaning");
-//   meaningElement.classList.toggle("hidden-text");
-//   meaningElement.classList.toggle("visible-text");
-// }
-
-// // Thêm sự kiện bàn phím
-// document.addEventListener("keydown", (event) => {
-//   switch (event.code) {
-//     case "Space":
-//       event.preventDefault();
-//       toggleMeaning(); // Hiển thị hoặc ẩn nghĩa khi nhấn Space
-//       break;
-//     case "ArrowRight":
-//       nextCard();
-//       break;
-//     case "ArrowLeft":
-//           prevCard();
-//       case "A":
-//           textToSpeech(flashCards[currentCardIndex].word, optionLang.value);
-//       break;
-//   }
-// });
-
-// // Hàm đọc văn bản thành giọng nói
-// function textToSpeech(text, lang) {
-//   const speech = new SpeechSynthesisUtterance(text);
-//   speech.lang = lang;
-//   speechSynthesis.speak(speech);
-// }
-
-let currentIndex = 0;
-let showBoth = false;
-let isFlipped = false;
-
-const flashcard = document.querySelector("#flashcard");
-const frontText = document.querySelector("#front-text");
-const backText = document.querySelector("#back-text");
-const progressText = document.querySelector("#progress-text");
-const progressBar = document.querySelector("#progress-bar");
-
-const enableShowBoth = document.querySelector("#enableShowBoth");
-
-// Dữ liệu mẫu
-
-const cards = [
-  { front: "Hello", back: "Xin chào" },
-  { front: "Goodbye", back: "Tạm biệt" },
-  { front: "Thank you", back: "Cảm ơn" },
-  { front: "Yes", back: "Có" },
-  { front: "No", back: "Không" },
-];
-
-// Cập nhật giao diện flashcard
-function updateFlashcard() {
-  const card = cards[currentIndex];
-
-  if (showBoth) {
-    flashcard.classList.remove("is-flipped");
-    frontText.textContent = `Mặt trước: ${card.front}`;
-    backText.textContent = `Mặt sau: ${card.back}`;
-    backText.style.display = "block";
+function speakText(text, langVoice) {
+  const speech = new SpeechSynthesisUtterance(text);
+  const voices = speechSynthesis.getVoices();
+  const defaultVoice = voices.find((voice) => voice.lang.startsWith(langVoice));
+  if (defaultVoice) {
+    speech.voice = defaultVoice;
   } else {
-    frontText.textContent = card.front;
-    backText.textContent = card.back;
-    backText.style.display = "none";
-    isFlipped = false;
-    flashcard.classList.remove("is-flipped");
+    console.warn(`Không tìm thấy giọng nói mặc định cho ngôn ngữ: ${langVoice}`);
+  }
+  speech.lang = langVoice;
+  speechSynthesis.speak(speech);
+}
+// // Hàm chọn ngôn ngữ exempale lang = {wordLang: "en-US", meaningLang: "vi-VN"}
+function insertOptionLang(lang) {
+  const langs = [
+    { English: "en-US" },
+    { VietNam: "vi-VN" },
+    { Korean: "ko-KR" },
+  ];
+  const wordLang = lang.langWord;
+  const meaningLang = lang.langMeaning;
+
+  langVoice = wordLang;
+  optionLang.innerHTML = "";
+  langs.forEach((item) => {
+    const [key, value] = Object.entries(item)[0];
+    const option = document.createElement("option");
+    if (value === wordLang) {
+      option.value = value;
+      option.dataset.mode = "word";
+      option.textContent = `${key}`;
+      option.selected = true;
+      optionLang.appendChild(option);
+    }
+    if (value === meaningLang) {
+      option.value = value;
+      option.dataset.mode = "meaning";
+      option.textContent = `${key}`;
+      optionLang.appendChild(option);
+    }
+  });
+
+  Modes();
+}
+
+// Tải flash card dựa trên chế độ hiển thị
+function updateFlashcard() {
+  if (originalQuestions.length === 0) {
+    flashcard.innerHTML = `<p class="no-data">Không có dữ liệu.</p>`;
+    return;
+  }
+  const Modes = JSON.parse(sessionStorage.getItem("Modes"));
+  const currentCard = originalQuestions[currentIndex];
+
+  // Hiển thị nội dung mặt trước và mặt sau
+  if (Modes.showBoth) {
+    frontText.textContent = `${currentCard.word}`;
+    backText.textContent = `${currentCard.meaning}`;
+    flashcard.classList.add("show-both");
+  } else if (isFlipped) {
+    frontText.textContent = `${currentCard.meaning}`;
+    backText.textContent = `${currentCard.word}`;
+    flashcard.classList.remove("show-both");
+
+  } else {
+    frontText.textContent = `${currentCard.word}`;
+    backText.textContent = `${currentCard.meaning}`;
+    flashcard.classList.remove("show-both");
+
   }
 
-  progressText.textContent = `Progress: ${currentIndex + 1} / ${cards.length}`;
-  progressBar.style.width = `${((currentIndex + 1) / cards.length) * 100}%`;
+  // Tự động đọc từ nếu chế độ autoSpeak được bật
+  if (Modes.autoSpeak) {
+    speakText(
+      isFlipped ? currentCard.meaning : currentCard.word,
+      Modes.langVoice
+    );
+  }
+
+  // Cập nhật thanh tiến trình
+  progressText.textContent = `Progress: ${currentIndex + 1} / ${
+    originalQuestions.length
+  }`;
+  progressBar.style.width = `${
+    ((currentIndex + 1) / originalQuestions.length) * 100
+  }%`;
+
+  // Tự động chuyển sang thẻ tiếp theo
+  if (isAutoplay) {
+    setTimeout(() => {
+      nextCard();
+    }, 4000);
+  }
 }
+
+document.addEventListener("keydown", (event) => {
+  switch (event.code) {
+    case "Space":
+      event.preventDefault();
+      isFlipped = !isFlipped;
+      updateFlashcard();
+      break;
+    case "ArrowRight":
+      nextCard();
+      break;
+    case "ArrowLeft":
+      prevCard();
+      break;
+    case "KeyA":
+      textToSpeech();
+      break;
+  }
+});
 
 // Lật flashcard
 flashcard.addEventListener("click", () => {
+  console.log(showBoth);
+  const Modes = JSON.parse(sessionStorage.getItem("Modes"));
+  showBoth = Modes.showBoth;
   if (!showBoth) {
     isFlipped = !isFlipped;
     flashcard.classList.toggle("is-flipped", isFlipped);
+  } else {
+    return;
   }
 });
+
+// Trộn danh sách từ
+function mixCards() {
+  const mixBtn = document.getElementById("mixBtn");
+  mixBtn.classList.toggle("text-secondary", !isMix);
+  mixBtn.classList.toggle("text-primary", isMix);
+  isMix = !isMix;
+  if (isMix) {
+    shuffle(originalQuestions);
+    updateFlashcard();
+  }
+}
 
 // Chuyển sang thẻ trước
 function prevCard() {
@@ -236,22 +248,13 @@ function prevCard() {
 
 // Chuyển sang thẻ tiếp theo
 function nextCard() {
-  if (currentIndex < cards.length - 1) {
+  if (currentIndex < originalQuestions.length - 1) {
     currentIndex++;
+    updateFlashcard();
+  } else {
+    currentIndex = 0; // Lặp lại từ đầu
     updateFlashcard();
   }
 }
 
-// Xử lý lưu thay đổi từ modal
-document.addEventListener("DOMContentLoaded", () => {
-  const saveChangesBtn = document.querySelector(".modal-footer .btn-primary");
 
-    saveChangesBtn.addEventListener("click", () => {
-      console.log(enableShowBoth.checked);
-      
-    showBoth = enableShowBoth.checked;
-    updateFlashcard();
-  });
-
-  updateFlashcard(); // Cập nhật giao diện khi load trang
-});

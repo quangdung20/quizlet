@@ -77,7 +77,9 @@
 .button-action {
     max-height: 40px;
     font: 1em sans-serif;
-}.box-file:hover .button-action i {
+}
+
+.box-file:hover .button-action i {
     color: #ffffff;
 }
 
@@ -185,16 +187,27 @@
 
 /* flash card */
 .flashcard-container {
-    width: 60%;
+    width: 80%;
     margin: 0 auto;
     text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+    .flashcard-container {
+        width: 100%;
+    }
+
+    #progress-bar-container{
+        display: none;
+    }
 }
 
 .flashcard-item {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
+    flex-direction: column;
     width: 100%;
 }
 
@@ -206,40 +219,71 @@
     cursor: pointer;
 }
 
+.flashcard.showBoth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .card-front,
 .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
+    /* Ẩn mặt sau khi lật */
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: 500;
     border: 1px solid #ccc;
-    border-radius: 10px;
-    transition: transform 0.5s ease-in-out;
+    border-radius: 8px;
+    transition: transform 0.5s;
+    /* Hiệu ứng lật */
 }
 
 .card-front {
     background-color: #ffffff;
     transform: rotateY(0deg);
+    /* Mặt trước */
 }
 
 .card-back {
     background-color: #f8f9fa;
     transform: rotateY(180deg);
+    /* Mặt sau */
 }
 
 .flashcard.is-flipped .card-front {
     transform: rotateY(180deg);
+    /* Lật mặt trước */
 }
 
 .flashcard.is-flipped .card-back {
     transform: rotateY(360deg);
+    /* Hiển thị mặt sau */
 }
 
+/* Hiển thị cả hai mặt */
+.flashcard.show-both .card-front {
+    position: absolute;
+    transform: rotateY(0deg);
+    width: 49%;
+    /* Thu nhỏ để hai mặt hiển thị cùng lúc */
+    height: 100%;
+    left: 0;
+}
+
+.flashcard.show-both .card-back {
+    position: absolute;
+    transform: rotateY(0deg);
+    width: 49%;
+    height: 100%;
+    right: 0;
+}
 
 
 #progress-bar-container {
